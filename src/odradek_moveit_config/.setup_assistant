@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: surgical_assistant_description
+    relative_path: urdf/med_arm.urdf.xacro
+  srdf:
+    relative_path: config/odradek_surgical_assistant.srdf
+  package_settings:
+    author_name: Kareem Taha
+    author_email: Kmat2040@gmail.com
+    generated_timestamp: 1778607143

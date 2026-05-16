@@ -1,0 +1,20 @@
+# Default initial positions for odradek_surgical_assistant's ros2_control fake system
+
+initial_positions:
+  elbow_pitch: 0
+  elbow_roll: 0
+  elbow_yaw: 0
+  petal_1_inner_joint: 0
+  petal_1_outer_joint: 0
+  petal_2_inner_joint: 0
+  petal_2_outer_joint: 0
+  petal_3_inner_joint: 0
+  petal_3_outer_joint: 0
+  petal_4_inner_joint: 0
+  petal_4_outer_joint: 0
+  petal_5_inner_joint: 0
+  petal_5_outer_joint: 0
+  shoulder_pitch: 0
+  shoulder_roll: 0
+  shoulder_yaw: 0
+  wrist_roll: 0

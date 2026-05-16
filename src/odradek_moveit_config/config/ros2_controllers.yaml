@@ -1,0 +1,49 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    odradek_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    odradek_gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+odradek_arm_controller:
+  ros__parameters:
+    joints:
+      - shoulder_yaw
+      - shoulder_pitch
+      - shoulder_roll
+      - elbow_yaw
+      - elbow_pitch
+      - elbow_roll
+      - wrist_roll
+    command_interfaces:
+      []
+    state_interfaces:
+      []
+    allow_nonzero_velocity_at_trajectory_end: true
+odradek_gripper_controller:
+  ros__parameters:
+    joints:
+      - petal_1_inner_joint
+      - petal_1_outer_joint
+      - petal_2_inner_joint
+      - petal_2_outer_joint
+      - petal_3_inner_joint
+      - petal_3_outer_joint
+      - petal_4_inner_joint
+      - petal_4_outer_joint
+      - petal_5_inner_joint
+      - petal_5_outer_joint
+    command_interfaces:
+      []
+    state_interfaces:
+      []
+    allow_nonzero_velocity_at_trajectory_end: true

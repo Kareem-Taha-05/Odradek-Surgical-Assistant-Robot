@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="odradek_surgical_assistant">
+
+    <material name="matte_black">
+        <color rgba="0.08 0.08 0.1 1.0"/>
+    </material>
+    <material name="gunmetal">
+        <color rgba="0.25 0.25 0.28 1.0"/>
+    </material>
+    <material name="rich_orange">
+        <color rgba="0.95 0.35 0.05 1.0"/>
+    </material>
+    <material name="pale_blue_scanner">
+        <color rgba="0.75 0.88 0.98 0.9"/>
+    </material>
+    <material name="deep_blue_lens">
+        <color rgba="0.1 0.2 0.7 1.0"/>
+    </material>
+
+    <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
+        <inertial>
+            <xacro:insert_block name="origin"/>
+            <mass value="${mass}" />
+            <inertia ixx="${(1/12) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0"
+                     iyy="${(1/12) * mass * (3*radius*radius + length*length)}" iyz="0.0"
+                     izz="${(1/2) * mass * (radius*radius)}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="dummy_inertia">
+        <inertial>
+            <mass value="0.01" />
+            <inertia ixx="0.00001" ixy="0.0" ixz="0.0"
+                     iyy="0.00001" iyz="0.0"
+                     izz="0.00001" />
+        </inertial>
+    </xacro:macro>
+
+    <link name="world"/>
+
+    <joint name="world_joint" type="fixed">
+        <parent link="world"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 1.0" rpy="0 0 0"/> 
+    </joint>
+
+    <link name="base_link">
+        <visual>
+            <geometry><cylinder radius="0.06" length="0.1"/></geometry>
+            <material name="matte_black"/>
+        </visual>
+        <collision>
+            <geometry><cylinder radius="0.06" length="0.1"/></geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="1.0" length="0.1" radius="0.06">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <joint name="shoulder_yaw" type="revolute">
+        <parent link="base_link"/><child link="shoulder_yaw_link"/>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/><axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    </joint>
+    
+    <link name="shoulder_yaw_link">
+        <xacro:dummy_inertia/>
+    </link> 
+    
+    <joint name="shoulder_pitch" type="revolute">
+        <parent link="shoulder_yaw_link"/><child link="shoulder_pitch_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    </joint>
+    
+    <link name="shoulder_pitch_link">
+        <xacro:dummy_inertia/>
+    </link> 
+    
+    <joint name="shoulder_roll" type="revolute">
+        <parent link="shoulder_pitch_link"/><child link="upper_arm"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/><axis xyz="1 0 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    </joint>
+
+    <link name="upper_arm">
+        <visual>
+            <origin xyz="0 0 0.15"/>
+            <geometry><box size="0.04 0.04 0.3"/></geometry>
+            <material name="gunmetal"/>
+        </visual>
+        <visual> 
+            <origin xyz="0 0 0"/>
+            <geometry><cylinder radius="0.015" length="0.05"/></geometry>
+            <material name="rich_orange"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.15"/>
+            <geometry><box size="0.04 0.04 0.3"/></geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="1.0" length="0.3" radius="0.02">
+            <origin xyz="0 0 0.15" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <joint name="elbow_yaw" type="revolute">
+        <parent link="upper_arm"/><child link="elbow_yaw_link"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/><axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    </joint>
+    
+    <link name="elbow_yaw_link">
+        <xacro:dummy_inertia/>
+    </link> 
+
+    <joint name="elbow_pitch" type="revolute">
+        <parent link="elbow_yaw_link"/><child link="elbow_pitch_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+        <limit lower="-2.0" upper="2.0" effort="10" velocity="1"/>
+    </joint>
+    
+    <link name="elbow_pitch_link">
+        <xacro:dummy_inertia/>
+    </link> 
+
+    <joint name="elbow_roll" type="revolute">
+        <parent link="elbow_pitch_link"/><child link="forearm"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/><axis xyz="1 0 0"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    </joint>
+
+    <link name="forearm">
+        <visual>
+            <origin xyz="0 0 0.125"/>
+            <geometry><box size="0.03 0.03 0.25"/></geometry>
+            <material name="gunmetal"/>
+        </visual>
+        <visual> 
+            <origin xyz="0 0 0"/>
+            <geometry><cylinder radius="0.012" length="0.04"/></geometry>
+            <material name="rich_orange"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.125"/>
+            <geometry><box size="0.03 0.03 0.25"/></geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="0.6" length="0.25" radius="0.015">
+            <origin xyz="0 0 0.125" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <joint name="wrist_roll" type="revolute">
+        <parent link="forearm"/><child link="scanner_hub"/>
+        <origin xyz="0 0 0.25" rpy="0 0 0"/><axis xyz="0 0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="5" velocity="2"/>
+    </joint>
+
+    <link name="scanner_hub">
+        <visual>
+            <geometry><cylinder radius="0.04" length="0.06"/></geometry>
+            <material name="matte_black"/>
+        </visual>
+        <visual>
+            <origin xyz="0 0 0.031"/>
+            <geometry><cylinder radius="0.015" length="0.005"/></geometry>
+            <material name="deep_blue_lens"/>
+        </visual>
+        <xacro:inertial_cylinder mass="0.2" length="0.06" radius="0.04">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <xacro:macro name="odradek_petal" params="index angle">
+        
+        <joint name="petal_${index}_inner_joint" type="revolute">
+            <parent link="scanner_hub"/>
+            <child link="petal_${index}_inner_link"/>
+            <origin xyz="${0.04 * cos(angle)} ${0.04 * sin(angle)} 0.0" rpy="0 1.57 ${angle}"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="-1.2" upper="0.5" effort="3" velocity="1.5"/>
+        </joint>
+
+        <link name="petal_${index}_inner_link">
+            <visual>
+                <origin xyz="0 0 0.08" rpy="0 0.15 0"/>
+                <geometry><box size="0.005 0.04 0.16"/></geometry>
+                <material name="gunmetal"/>
+            </visual>
+            <visual> 
+                <origin xyz="0 0 0"/>
+                <geometry><cylinder radius="0.008" length="0.02"/></geometry>
+                <material name="rich_orange"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0.08" rpy="0 0.15 0"/>
+                <geometry><box size="0.005 0.04 0.16"/></geometry>
+            </collision>
+            <xacro:inertial_cylinder mass="0.08" length="0.16" radius="0.01">
+                <origin xyz="0 0 0.08" rpy="0 0 0"/>
+            </xacro:inertial_cylinder>
+        </link>
+
+        <joint name="petal_${index}_outer_joint" type="revolute">
+            <parent link="petal_${index}_inner_link"/>
+            <child link="petal_${index}_outer_link"/>
+            <origin xyz="-0.02 0 0.155" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+            <limit lower="-1.5" upper="0.5" effort="3" velocity="1.5"/>
+        </joint>
+
+        <link name="petal_${index}_outer_link">
+            <visual>
+                <origin xyz="-0.015 0 0.11" rpy="0 0.1 0"/>
+                <geometry><box size="0.005 0.06 0.22"/></geometry>
+                <material name="pale_blue_scanner"/>
+            </visual>
+            <visual> 
+                <origin xyz="0 0 0"/>
+                <geometry><cylinder radius="0.006" length="0.02"/></geometry>
+                <material name="rich_orange"/>
+            </visual>
+            <collision>
+                <origin xyz="-0.015 0 0.11" rpy="0 0.1 0"/>
+                <geometry><box size="0.005 0.06 0.22"/></geometry>
+            </collision>
+            <xacro:inertial_cylinder mass="0.06" length="0.22" radius="0.01">
+                <origin xyz="-0.015 0 0.11" rpy="0 0 0"/>
+            </xacro:inertial_cylinder>
+        </link>
+    </xacro:macro>
+
+    <xacro:odradek_petal index="1" angle="0.0"/>
+    <xacro:odradek_petal index="2" angle="1.256"/>
+    <xacro:odradek_petal index="3" angle="2.513"/>
+    <xacro:odradek_petal index="4" angle="3.769"/>
+    <xacro:odradek_petal index="5" angle="5.026"/>
+
+<xacro:macro name="ctrl_joint" params="name lower_limit upper_limit">
+        <joint name="${name}">
+            <command_interface name="position">
+                <param name="min">${lower_limit}</param>
+                <param name="max">${upper_limit}</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </xacro:macro>
+
+    <ros2_control name="GazeboSimSystem" type="system">
+        <hardware>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+
+        <xacro:ctrl_joint name="shoulder_yaw" lower_limit="-1.57" upper_limit="1.57"/>
+        <xacro:ctrl_joint name="shoulder_pitch" lower_limit="-1.57" upper_limit="1.57"/>
+        <xacro:ctrl_joint name="shoulder_roll" lower_limit="-1.57" upper_limit="1.57"/>
+        <xacro:ctrl_joint name="elbow_yaw" lower_limit="-1.57" upper_limit="1.57"/>
+        <xacro:ctrl_joint name="elbow_pitch" lower_limit="-2.0" upper_limit="2.0"/>
+        <xacro:ctrl_joint name="elbow_roll" lower_limit="-1.57" upper_limit="1.57"/>
+        <xacro:ctrl_joint name="wrist_roll" lower_limit="-3.14" upper_limit="3.14"/>
+
+        <xacro:macro name="petal_ctrl" params="index">
+            <xacro:ctrl_joint name="petal_${index}_inner_joint" lower_limit="-1.2" upper_limit="0.5"/>
+            <xacro:ctrl_joint name="petal_${index}_outer_joint" lower_limit="-1.5" upper_limit="0.5"/>
+        </xacro:macro>
+        
+        <xacro:petal_ctrl index="1"/>
+        <xacro:petal_ctrl index="2"/>
+        <xacro:petal_ctrl index="3"/>
+        <xacro:petal_ctrl index="4"/>
+        <xacro:petal_ctrl index="5"/>
+    </ros2_control>
+
+    <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find surgical_assistant_description)/config/controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+</robot>

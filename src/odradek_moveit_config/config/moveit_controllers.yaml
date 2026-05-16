@@ -1,0 +1,30 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - odradek_controller
+
+  odradek_controller:
+    type: FollowJointTrajectory
+    joints:
+      - shoulder_yaw
+      - shoulder_pitch
+      - shoulder_roll
+      - elbow_yaw
+      - elbow_pitch
+      - elbow_roll
+      - wrist_roll
+      - petal_1_inner_joint
+      - petal_1_outer_joint
+      - petal_2_inner_joint
+      - petal_2_outer_joint
+      - petal_3_inner_joint
+      - petal_3_outer_joint
+      - petal_4_inner_joint
+      - petal_4_outer_joint
+      - petal_5_inner_joint
+      - petal_5_outer_joint
+    action_ns: follow_joint_trajectory
+    default: true
