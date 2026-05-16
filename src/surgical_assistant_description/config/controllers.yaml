@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # 100 Hz control loop for smooth motion
+    update_rate: 100  
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -8,7 +8,6 @@ controller_manager:
     odradek_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-# Configuration for the Trajectory Controller
 odradek_controller:
   ros__parameters:
     joints:
