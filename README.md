@@ -19,7 +19,7 @@
 
 ## Overview
 
-**Odradek** is a 17-DOF shoulder-mounted robotic manipulator engineered to operate within a surgeon's personal workspace. It handles non-operative tasks — instrument handovers, dynamic lighting, workspace management — so the surgical team can stay focused on what matters.
+**Odradek** is a 17-DOF shoulder-mounted robotic manipulator engineered to operate within a surgeon's personal workspace. It handles non-operative tasks, instrument handovers, dynamic lighting, workspace management, so the surgical team can stay focused on what matters.
 
 The system is fully simulated in **ROS 2 Jazzy** and **Gazebo Harmonic**, with physics-validated kinematics, MoveIt 2 motion planning, and a complete `ros2_control` actuation stack. The hardware integration path is kept open by design.
 
@@ -70,7 +70,7 @@ The project is structured as three integrated layers:
 
 The manipulator went through three design iterations before reaching its current architecture.
 
-### Phase 1 — Foundational Serial Kinematics
+### Phase 1: Foundational Serial Kinematics
 
 <div align="center">
 <img src="docs/media/phase1_viewA.png" width="30%"/> <img src="docs/media/phase1_viewB.png" width="30%"/> <img src="docs/media/phase1_viewC.png" width="30%"/>
@@ -80,7 +80,7 @@ A 4-DOF serial chain: shoulder yaw → upper arm pitch → elbow pitch → stati
 
 ---
 
-### Phase 2 — High-DOF Dexterity and Parallel End-Effector
+### Phase 2: High-DOF Dexterity and Parallel End-Effector
 
 <div align="center">
 <img src="docs/media/phase2_viewA.png" width="30%"/> <img src="docs/media/phase2_viewB.png" width="30%"/> <img src="docs/media/phase2_viewC.png" width="30%"/>
@@ -90,7 +90,7 @@ The architecture was upgraded to **17 DOF**. Single-axis joints were replaced wi
 
 ---
 
-### Phase 3 — Grasping Optimization and Final Proportions
+### Phase 3: Grasping Optimization and Final Proportions
 
 <div align="center">
 <img src="docs/media/phase3_viewA.png" width="30%"/> <img src="docs/media/phase3_viewB.png" width="30%"/> <img src="docs/media/phase3_viewC.png" width="30%"/>
@@ -113,7 +113,7 @@ Collision geometries and mass/inertia parameters were added to every link to sta
 <img src="docs/media/collapse_phase1.png" width="22%"/> <img src="docs/media/collapse_phase2.png" width="22%"/> <img src="docs/media/collapse_phase3.png" width="22%"/> <img src="docs/media/collapse_phase4.png" width="22%"/>
 </div>
 
-The unactuated model predictably collapsed under 9.81 m/s² gravity. This confirmed that the inertial parameters were correctly defined — the model behaves like a real object. It also established the hard requirement for active joint control.
+The unactuated model predictably collapsed under 9.81 m/s² gravity. This confirmed that the inertial parameters were correctly defined, the model behaves like a real object. It also established the hard requirement for active joint control.
 
 ### Stable Actuation with ros2_control
 
@@ -132,10 +132,10 @@ MoveIt 2 integration was configured using the **MoveIt Setup Assistant** with th
 | Component | Configuration |
 |-----------|--------------|
 | IK Solver | KDL Kinematics Plugin (Jacobian-based numerical IK) |
-| Arm Planning Group | `odradek_arm` — 7-DOF gross positioning chain |
-| Gripper Planning Group | `odradek_gripper` — 10-DOF parallel petal mechanism |
+| Arm Planning Group | `odradek_arm`: 7-DOF gross positioning chain |
+| Gripper Planning Group | `odradek_gripper`: 10-DOF parallel petal mechanism |
 | Self-Collision Matrix | 10,000 sample high-density generation |
-| Default Pose | `home_position` — zero-state joint configuration |
+| Default Pose | `home_position`: zero-state joint configuration |
 | End-Effector Link | `scanner_hub` (terminal link of arm chain) |
 
 ### Full-Stack Trajectory Execution
@@ -152,9 +152,9 @@ MoveIt 2 integration was configured using the **MoveIt Setup Assistant** with th
 
 MoveIt generates a trajectory in RViz, which is bridged to Gazebo via `ros_gz_bridge`. The `ros2_control` hardware interfaces execute the joint commands in the physics engine. Three integration challenges were resolved to get here:
 
-1. **Kinematic Singularity** — The home position (all joints at 0°) caused Jacobian rank loss. Fixed by enabling approximate IK and introducing a slight initial end-effector rotation.
-2. **Simulated Time Synchronization** — MoveIt and Gazebo ran on different clocks. Fixed by publishing Gazebo's `/clock` topic to the ROS 2 network and injecting `use_sim_time:=true` into all nodes.
-3. **Partial Hardware Execution** — MoveIt sent 7-joint trajectories to a controller expecting all 17. Fixed by enabling `allow_partial_joints_goal`, allowing the arm to move while petals maintain holding torque.
+1. **Kinematic Singularity:** The home position (all joints at 0°) caused Jacobian rank loss. Fixed by enabling approximate IK and introducing a slight initial end-effector rotation.
+2. **Simulated Time Synchronization:** MoveIt and Gazebo ran on different clocks. Fixed by publishing Gazebo's `/clock` topic to the ROS 2 network and injecting `use_sim_time:=true` into all nodes.
+3. **Partial Hardware Execution:** MoveIt sent 7-joint trajectories to a controller expecting all 17. Fixed by enabling `allow_partial_joints_goal`, allowing the arm to move while petals maintain holding torque.
 
 ---
 
@@ -169,8 +169,8 @@ MoveIt generates a trajectory in RViz, which is bridged to Gazebo via `ros_gz_br
 </div>
 
 Two programmatic grasping states are defined:
-- **`gripper_open`** — petals flared to maximum clearance
-- **`gripper_closed`** — petals contracted for form-closure grasping
+- **`gripper_open`:** petals flared to maximum clearance
+- **`gripper_closed`:** petals contracted for form-closure grasping
 
 Both states are executable as single commands, providing the foundation for future high-level control sequences.
 
@@ -240,14 +240,6 @@ odradek-surgical-robot/
 
 ---
 
-## Team
-
-**Kareem Mohammed Ahmed Taha · Bassel Ahmed Shaheen · Ibrahim Fateen**
-
-*Supervised by Prof. Mohammed Islam & Eng. Mikhail Nady*
-
----
-
 <div align="center">
-<sub>Named and Modeled after the fictional multi-limbed scanner from <em>Death Stranding</em> — a machine built to navigate difficult terrain so its operator doesn't have to.</sub>
+<sub>Named and Modeled after the fictional multi-limbed scanner from <em>Death Stranding</em>, a machine built to navigate difficult terrain so its operator doesn't have to.</sub>
 </div>
