@@ -10,7 +10,6 @@ def generate_launch_description():
     pkg_share = get_package_share_directory('surgical_assistant_description')
     default_model_path = os.path.join(pkg_share, 'urdf', 'med_arm.urdf.xacro')
 
-    # Explicitly define this as a string parameter
     robot_description = ParameterValue(
         Command(['xacro ', LaunchConfiguration('model')]),
         value_type=str
